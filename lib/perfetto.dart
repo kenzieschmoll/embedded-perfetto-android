@@ -12,14 +12,11 @@ class Perfetto extends StatefulWidget {
 }
 
 class _PerfettoState extends State<Perfetto> {
-  static const _perfettoUrl = 'https://ui.perfetto.dev';
+  // static const _perfettoUrl = 'https://ui.perfetto.dev';
 
   // Url when running Perfetto locally following the instructions here:
   // https://perfetto.dev/docs/contributing/build-instructions#ui-development
-  // NOTE: THIS DOES NOT WORK (net::ERR_CONNECTION_REFUSED). I suspect something
-  // to do with localhost being inaccessible - this webpage is hosted on my
-  // computer and not on the android device
-  // static const _perfettoUrl = 'http://127.0.0.1:10000/';
+  static const _perfettoUrl = 'http://10.0.2.2:10000/';
 
   late final Completer<WebViewController> _controllerCompleter;
 
@@ -85,15 +82,15 @@ class _PerfettoState extends State<Perfetto> {
     await _pageFinishedCompleter?.future;
 
     final result = await _controller?.runJavascriptReturningResult('''
-function pingPerfetto(win) {
+function pingPerfetto() {
   MyJavascriptChannel.postMessage('pinging Perfetto');
-  window.postMessage('PING', 'https://ui.perfetto.dev');
+  window.postMessage('PING', 'http://10.0.2.2:10000/');
 }
 
 function ping() {
-  // const win = window.open('https://ui.perfetto.dev');
+  // const win = window.open('http://10.0.2.2:10000/');
 
-  const timer = setInterval(() => pingPerfetto(window), 5000); 
+  const timer = setInterval(() => pingPerfetto(), 5000); 
   
   const onMessageHandler = (evt) => {
     // The only event we get back is 'PING' - not 'PONG' like we are expecting.
